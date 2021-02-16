@@ -1,0 +1,10 @@
+{
+  "name": "superorder-auth",
+  "version": "1.0.0",
+  "description": "UI",
+  "scripts": {
+  },
+  "keywords": [],
+  "author": "Roman Lakhtadyr <roman.lakhtadyr@gmail.com>",
+  "private": true
+}
