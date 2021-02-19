@@ -1,5 +1,5 @@
-import * as knex from 'knex'
 import { Config } from './config'
+import knex = require('knex')
 
 export type Knex = knex
 
