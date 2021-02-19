@@ -1,8 +1,8 @@
-import { hash } from "bcryptjs"
-import { validate as isValidEmail } from "email-validator"
-import * as Router from "koa-router"
-import { Config } from "../config"
-import { Knex } from "../knex"
+import { hash } from 'bcryptjs'
+import { validate as isValidEmail } from 'email-validator'
+import * as Router from 'koa-router'
+import { Config } from '../config'
+import { Knex } from '../knex'
 
 export function postSignup(config: Config, knex: Knex): Router.IMiddleware {
   void config
@@ -26,7 +26,7 @@ export function postSignup(config: Config, knex: Knex): Router.IMiddleware {
     const now = new Date().toISOString()
 
     try {
-      await knex("users").insert({
+      await knex('users').insert({
         email,
         password: passwordHash,
         created_at: now,

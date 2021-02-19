@@ -1,7 +1,7 @@
 export class Config {
   readonly port: number
   readonly allowedOrigin: string
-  readonly refreshTokenLifeTime: number
+  readonly refreshTokenLifetime: number
   readonly accessTokenLifetime: number
   readonly databaseUrl: string
   readonly databaseClient: string
@@ -10,40 +10,40 @@ export class Config {
   constructor(env: { [key: string]: string | undefined }) {
     this.port = env.PORT ? parseInt(env.PORT, 10) : 8080
 
-    if (!env.AUTH_SERVER_ALLOWED_ORIGIN) {
-      throw new Error("Environment variable AUTH_SERVER_ALLOWED_ORIGIN is required")
+    if (!env.ALLOWED_ORIGIN) {
+      throw new Error('Environment variable ALLOWED_ORIGIN is required')
     }
 
-    this.allowedOrigin = env.AUTH_SERVER_ALLOWED_ORIGIN
+    this.allowedOrigin = env.ALLOWED_ORIGIN
 
-    if (!env.AUTH_SERVER_REFRESH_TOKEN_LIFETIME) {
-      throw new Error("Environment variable AUTH_SERVER_REFRESH_TOKEN_LIFETIME is required")
+    if (!env.REFRESH_TOKEN_LIFETIME) {
+      throw new Error('Environment variable REFRESH_TOKEN_LIFETIME is required')
     }
 
-    this.refreshTokenLifeTime = parseInt(env.AUTH_SERVER_REFRESH_TOKEN_LIFETIME, 10)
+    this.refreshTokenLifetime = parseInt(env.REFRESH_TOKEN_LIFETIME, 10)
 
-    if (!env.AUTH_SERVER_ACCESS_TOKEN_LIFETIME) {
-      throw new Error("Environment variable AUTH_SERVER_ACCESS_TOKEN_LIFETIME is required")
+    if (!env.ACCESS_TOKEN_LIFETIME) {
+      throw new Error('Environment variable ACCESS_TOKEN_LIFETIME is required')
     }
 
-    this.accessTokenLifetime = parseInt(env.AUTH_SERVER_ACCESS_TOKEN_LIFETIME, 10)
+    this.accessTokenLifetime = parseInt(env.ACCESS_TOKEN_LIFETIME, 10)
 
-    if (!env.AUTH_SERVER_DATABASE_URL) {
-      throw new Error("Environment variable AUTH_SERVER_DATABASE_URL is required")
+    if (!env.DATABASE_URL) {
+      throw new Error('Environment variable DATABASE_URL is required')
     }
 
-    this.databaseUrl = env.AUTH_SERVER_DATABASE_URL
+    this.databaseUrl = env.DATABASE_URL
 
-    if (!env.AUTH_SERVER_DATABASE_CLIENT) {
-      throw new Error("Environment variable AUTH_SERVER_DATABASE_CLIENT is required")
+    if (!env.DATABASE_CLIENT) {
+      throw new Error('Environment variable DATABASE_CLIENT is required')
     }
 
-    this.databaseClient = env.AUTH_SERVER_DATABASE_CLIENT
+    this.databaseClient = env.DATABASE_CLIENT
 
-    if (!env.AUTH_SERVER_TOKEN_SECRET) {
-      throw new Error("Environment variable AUTH_SERVER_TOKEN_SECRET is required")
+    if (!env.TOKEN_SECRET) {
+      throw new Error('Environment variable TOKEN_SECRET is required')
     }
 
-    this.tokenSecret = env.AUTH_SERVER_TOKEN_SECRET
+    this.tokenSecret = env.TOKEN_SECRET
   }
 }

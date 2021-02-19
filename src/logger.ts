@@ -1,10 +1,10 @@
-import os = require("os")
-import winston = require("winston")
+import os = require('os')
+import winston = require('winston')
 
 export type Logger = winston.Logger
 
 export const logger = winston.createLogger({
-  level: "debug",
+  level: 'debug',
   defaultMeta: { hostname: os.hostname() },
   transports: [
     new winston.transports.Console({

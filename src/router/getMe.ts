@@ -1,7 +1,7 @@
-import { entities } from "@myownradio/shared-server"
-import { Middleware } from "koa"
-import { Config } from "../config"
-import { Knex } from "../knex"
+import { Middleware } from 'koa'
+import { Config } from '../config'
+import { Knex } from '../knex'
+import { IUsersEntity, Table } from '../entities'
 
 export function getMe(config: Config, knex: Knex): Middleware {
   void config
@@ -10,9 +10,7 @@ export function getMe(config: Config, knex: Knex): Middleware {
     // todo explicitly decode state
     const { uid } = ctx.state.user
 
-    const userDetails = await knex<entities.IUsersEntity>(entities.TableName.Users)
-      .where({ id: uid })
-      .first()
+    const userDetails = await knex<IUsersEntity>(Table.Users).where({ id: uid }).first()
 
     if (!userDetails) {
       ctx.throw(401)

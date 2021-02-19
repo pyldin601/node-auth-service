@@ -1,5 +1,5 @@
-import * as knex from "knex"
-import { Config } from "./config"
+import * as knex from 'knex'
+import { Config } from './config'
 
 export type Knex = knex
 

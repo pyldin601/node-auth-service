@@ -1,11 +1,11 @@
-import * as Router from "koa-router"
-import { Config } from "../config"
-import { Knex } from "../knex"
-import { createAccessToken } from "../utils/createAccessToken"
-import { generateTokenForUser } from "../utils/generateTokenForUser"
+import * as Router from 'koa-router'
+import { Config } from '../config'
+import { Knex } from '../knex'
+import { createAccessToken } from '../utils/createAccessToken'
+import { generateTokenForUser } from '../utils/generateTokenForUser'
 
 function calculateExpirationThreshold(config: Config): string {
-  const thresholdMillis = new Date().getTime() - config.refreshTokenLifeTime * 1000
+  const thresholdMillis = new Date().getTime() - config.refreshTokenLifetime * 1000
   return new Date(thresholdMillis).toISOString()
 }
 
@@ -20,12 +20,12 @@ export function postRefreshToken(config: Config, knex: Knex): Router.IMiddleware
     const newRefreshToken = await generateTokenForUser()
     const now = new Date().toISOString()
 
-    const newAccessToken = await knex.transaction(async trx => {
+    const newAccessToken = await knex.transaction(async (trx) => {
       const threshold = calculateExpirationThreshold(config)
 
-      const updatedRows = await trx("refresh_tokens")
+      const updatedRows = await trx('refresh_tokens')
         .update({ refresh_token: newRefreshToken, updated_at: now })
-        .where("updated_at", ">", threshold)
+        .where('updated_at', '>', threshold)
         .where({ refresh_token: oldRefreshToken })
         .count<number>()
 
@@ -33,7 +33,7 @@ export function postRefreshToken(config: Config, knex: Knex): Router.IMiddleware
         ctx.throw(401)
       }
 
-      const updatedRow = await trx("refresh_tokens")
+      const updatedRow = await trx('refresh_tokens')
         .where({ refresh_token: newRefreshToken })
         .first()
 

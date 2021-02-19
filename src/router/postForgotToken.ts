@@ -1,7 +1,7 @@
-import { entities } from "@myownradio/shared-server"
-import * as Router from "koa-router"
-import { Config } from "../config"
-import { Knex } from "../knex"
+import * as Router from 'koa-router'
+import { Config } from '../config'
+import { Knex } from '../knex'
+import { IRefreshTokensEntity, Table } from '../entities'
 
 export function postForgotToken(config: Config, knex: Knex): Router.IMiddleware {
   void config
@@ -13,7 +13,7 @@ export function postForgotToken(config: Config, knex: Knex): Router.IMiddleware 
       ctx.throw(400)
     }
 
-    const deletedRows = await knex<entities.IRefreshTokensEntity>(entities.TableName.RefreshTokens)
+    const deletedRows = await knex<IRefreshTokensEntity>(Table.RefreshTokens)
       .where({ refresh_token })
       .delete()
       .count<number>()

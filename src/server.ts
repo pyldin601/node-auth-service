@@ -1,7 +1,7 @@
-import { createApp } from "./app"
-import { Config } from "./config"
-import { createKnexFromConfig } from "./knex"
-import { logger } from "./logger"
+import { createApp } from './app'
+import { Config } from './config'
+import { createKnexFromConfig } from './knex'
+import { logger } from './logger'
 
 const config = new Config(process.env)
 const knex = createKnexFromConfig(config)
@@ -14,7 +14,7 @@ void (async (): Promise<void> => {
       logger.debug(`Server is listening on port ${config.port}`)
       resolve(server)
     })
-    app.on("error", error => reject(error))
+    app.on('error', (error) => reject(error))
   })
 
   // todo handle sigint, sigterm signals

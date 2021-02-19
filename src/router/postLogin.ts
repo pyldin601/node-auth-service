@@ -1,10 +1,11 @@
-import { compare } from "bcryptjs"
-import * as Router from "koa-router"
-import { Config } from "../config"
-import { Knex } from "../knex"
+import { compare } from 'bcryptjs'
+import * as Router from 'koa-router'
+import { Config } from '../config'
+import { Knex } from '../knex'
 
-import { createAccessToken } from "../utils/createAccessToken"
-import { generateTokenForUser } from "../utils/generateTokenForUser"
+import { createAccessToken } from '../utils/createAccessToken'
+import { generateTokenForUser } from '../utils/generateTokenForUser'
+import { IRefreshTokensEntity, Table } from '../entities'
 
 export function postLogin(config: Config, knex: Knex): Router.IMiddleware {
   return async (ctx): Promise<void> => {
@@ -14,9 +15,7 @@ export function postLogin(config: Config, knex: Knex): Router.IMiddleware {
       ctx.throw(400)
     }
 
-    const user = await knex("users")
-      .where({ email })
-      .first()
+    const user = await knex('users').where({ email }).first()
 
     if (!user) {
       ctx.throw(401)
@@ -31,14 +30,18 @@ export function postLogin(config: Config, knex: Knex): Router.IMiddleware {
     const refreshToken = await generateTokenForUser()
     const now = new Date().toISOString()
 
-    await knex("refresh_tokens").insert({
+    await knex<IRefreshTokensEntity>(Table.RefreshTokens).insert({
       user_id: user.id,
       refresh_token: refreshToken,
       created_at: now,
       updated_at: now,
     })
 
-    const accessToken = await createAccessToken(config.tokenSecret, config.accessTokenLifetime, user.id)
+    const accessToken = await createAccessToken(
+      config.tokenSecret,
+      config.accessTokenLifetime,
+      user.id,
+    )
 
     ctx.body = {
       refresh_token: refreshToken,

@@ -1,13 +1,30 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "target": "es6",
     "module": "commonjs",
+    "target": "es2019",
+    "sourceMap": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
     "moduleResolution": "node",
-    "outDir": "dist"
+    "outDir": "dist",
+    "strict": true,
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
+    "noUncheckedIndexedAccess": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "useDefineForClassFields": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": false,
+    "lib": [
+      "es5",
+      "es2019.array",
+      "esnext"
+    ]
   },
   "include": [
-    "src/server.ts",
-    "tests/app.spec.ts"
+    "src"
   ]
 }
