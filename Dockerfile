@@ -11,7 +11,7 @@ COPY packages/auth packages/auth
 RUN npm --prefix packages/auth run build
 RUN (cd packages/auth && npm prune --production)
 
-FROM node:14
+FROM node:14-alpine
 
 WORKDIR /code
 
