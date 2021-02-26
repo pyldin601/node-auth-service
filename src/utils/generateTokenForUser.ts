@@ -1,4 +1,4 @@
-import crypto = require("crypto")
+import crypto from 'crypto'
 
 export function generateTokenForUser(): Promise<string> {
   return new Promise<string>((resolve, reject) => {
@@ -7,7 +7,7 @@ export function generateTokenForUser(): Promise<string> {
         reject(error)
         return
       }
-      resolve(buffer.toString("hex"))
+      resolve(buffer.toString('hex'))
     })
   })
 }

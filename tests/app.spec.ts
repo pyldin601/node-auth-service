@@ -1,8 +1,8 @@
 import { createLogger } from 'winston'
-import { createApp } from '../src/app'
 import { Config } from '../src/config'
 import { Knex } from '../src/knex'
 import { Logger } from '../src/logger'
+import { HttpServer } from '../src/HttpServer'
 import knex = require('knex')
 import supertest = require('supertest')
 
@@ -45,7 +45,7 @@ beforeEach(async () => {
     directory: seedsDir,
   })
 
-  request = supertest(createApp(config, knexConnection, logger).callback())
+  request = supertest(new HttpServer(config, knexConnection, logger).app.callback())
 })
 
 describe('on POST /signup', () => {
@@ -170,19 +170,20 @@ describe('/refreshToken', () => {
   })
 })
 
-describe('/me', () => {
-  test('GET /me - should get authorized user details', async () => {
-    await request.get('/me').set('Authorization', `Bearer ${accessToken}`).expect(200, {
-      email: 'foo@bar.baz',
-    })
+describe('/forward', () => {
+  test('GET /forward - should get authorized user details', async () => {
+    await request
+      .get('/forward')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect('user-id', '1')
   })
 
-  test('GET /me - should fail if unauthorized', async () => {
-    await request.get('/me').expect(401)
+  test('GET /forward - should fail if unauthorized', async () => {
+    await request.get('/forward').expect(401)
   })
 
-  test('GET /me - should fail if authorization is wrong', async () => {
-    await request.get('/me').set('Authorization', 'Bearer Wrong').expect(401)
+  test('GET /forward - should fail if authorization is wrong', async () => {
+    await request.get('/forward').set('Authorization', 'Bearer Wrong').expect(401)
   })
 })
 
