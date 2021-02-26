@@ -1,11 +1,10 @@
-import cors = require("@koa/cors")
-import Application = require("koa")
-import { Config } from "./config"
-import { Knex } from "./knex"
-import { Logger } from "./logger"
-import { createRouter } from "./router"
-import {requestLogger} from "./requestLogger";
-
+import { Config } from './config'
+import { Knex } from './knex'
+import { Logger } from './logger'
+import { createRouter } from './router'
+import { requestLogger } from './requestLogger'
+import cors = require('@koa/cors')
+import Application = require('koa')
 
 export function createApp(config: Config, knex: Knex, logger: Logger): Application {
   const app = new Application()
