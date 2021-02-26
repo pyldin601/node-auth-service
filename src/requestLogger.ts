@@ -1,4 +1,4 @@
-import { Context, Middleware } from "koa"
+import { Context, Middleware } from 'koa'
 
 interface Logger {
   warn(formatter: string, data: unknown): void
@@ -20,7 +20,11 @@ export function requestLogger(logger: Logger): Middleware {
       const statusCode = error.status || DEFAULT_KOA_ERROR_STATUS_CODE
       const errorText = (error.stack || error) as string
 
-      logger.warn(`Error happened during inbound http request: ${errorText}`, { method, route, statusCode })
+      logger.warn(`Error happened during inbound http request: ${errorText}`, {
+        method,
+        route,
+        statusCode,
+      })
 
       throw error
     }

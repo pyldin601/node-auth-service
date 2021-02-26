@@ -1,22 +1,18 @@
-import { createApp } from './app'
 import { Config } from './config'
 import { createKnexFromConfig } from './knex'
 import { logger } from './logger'
+import { HttpServer } from './HttpServer'
 
-const config = new Config(process.env)
-const knex = createKnexFromConfig(config)
+async function main(): Promise<void> {
+  const config = new Config(process.env)
+  const knex = createKnexFromConfig(config)
+  const server = new HttpServer(config, knex, logger)
 
-const app = createApp(config, knex, logger)
+  logger.debug(`Server is listening on port ${config.port}`)
+  await server.listen()
+}
 
-void (async (): Promise<void> => {
-  const server = await new Promise((resolve, reject) => {
-    const server = app.listen(config.port, () => {
-      logger.debug(`Server is listening on port ${config.port}`)
-      resolve(server)
-    })
-    app.on('error', (error) => reject(error))
-  })
-
-  // todo handle sigint, sigterm signals
-  void server
-})()
+main().catch((error) => {
+  logger.error(error)
+  process.exit(1)
+})
