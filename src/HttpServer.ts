@@ -27,6 +27,8 @@ export class HttpServer {
     const router = new Router()
 
     router.get('/forward', jwt({ secret: config.tokenSecret }), this.forward)
+    router.get('/user', jwt({ secret: config.tokenSecret }), this.getUser)
+
     router.post('/signup', bodyparser(), this.signup)
     router.post('/login', bodyparser(), this.login)
     router.post('/refreshToken', bodyparser(), this.refreshToken)
@@ -57,6 +59,14 @@ export class HttpServer {
   private forward = async (ctx: RouterContext): Promise<void> => {
     const { uid } = ctx.state.user
 
+    ctx.set('user-id', uid)
+
+    ctx.status = 200
+  }
+
+  private getUser = async (ctx: RouterContext): Promise<void> => {
+    const { uid } = ctx.state.user
+
     const userDetails = await this.knex<IUsersEntity>(Table.Users).where({ id: uid }).first()
 
     if (!userDetails) {
@@ -64,9 +74,10 @@ export class HttpServer {
       return
     }
 
-    ctx.set('user-id', String(userDetails.id))
-
-    ctx.status = 200
+    ctx.body = {
+      id: userDetails.id,
+      email: userDetails.email,
+    }
   }
 
   private signup = async (ctx: RouterContext): Promise<void> => {
