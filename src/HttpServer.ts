@@ -210,7 +210,7 @@ export class HttpServer {
       .count<number>()
 
     if (deletedRows === 0) {
-      ctx.throw(409)
+      ctx.throw(401)
     }
 
     ctx.status = 200

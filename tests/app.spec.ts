@@ -187,19 +187,19 @@ describe('/forward', () => {
   })
 })
 
-describe('POST /forgotToken', () => {
+describe('POST /releaseToken', () => {
   it('should respond with 200 if success', async () => {
     await request
-      .post('/forgotToken')
+      .post('/releaseToken')
       .send({ refresh_token: '8e6112346a91d135e3cb8bbad7f5363eae2108ff' })
       .expect(200)
   })
 
   it('should respond with 400 if no refresh token specified', async () => {
-    await request.post('/forgotToken').expect(400)
+    await request.post('/releaseToken').expect(400)
   })
 
   it('should respond with 401 if refresh token is not valid', async () => {
-    await request.post('/forgotToken').send({ refresh_token: 'invalid_refresh_token' }).expect(401)
+    await request.post('/releaseToken').send({ refresh_token: 'invalid_refresh_token' }).expect(401)
   })
 })
