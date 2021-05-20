@@ -11,4 +11,4 @@ RUN npm --prefix packages/auth ci
 COPY packages/auth/knexfile.js packages/auth/
 COPY packages/auth/migrations packages/auth/migrations
 
-CMD npx knex migrate:latest
+CMD npm --prefix packages/auth run migrate
