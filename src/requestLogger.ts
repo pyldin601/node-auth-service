@@ -15,7 +15,7 @@ export function requestLogger(logger: Logger): Middleware {
       await next()
     } catch (error) {
       const route = ctx._matchedRoute
-      const { method } = ctx.request
+      const { method, headers } = ctx.request
 
       const statusCode = error.status || DEFAULT_KOA_ERROR_STATUS_CODE
       const errorText = (error.stack || error) as string
@@ -24,6 +24,7 @@ export function requestLogger(logger: Logger): Middleware {
         method,
         route,
         statusCode,
+        headers,
       })
 
       throw error

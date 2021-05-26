@@ -21,6 +21,14 @@ export class HttpServer {
   constructor(private config: Config, private knex: Knex, private logger: Logger) {
     const app = new Application()
 
+    app.use((ctx, next) => {
+      if (ctx.request.header['x-forwarded-method'] === 'OPTIONS') {
+        ctx.method = 'OPTIONS'
+      }
+
+      return next()
+    })
+
     app.use(requestLogger(logger))
     app.use(cors({ credentials: true, origin: config.allowedOrigin }))
 
