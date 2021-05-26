@@ -1,4 +1,4 @@
-FROM node:14 as service
+FROM node:16 as service
 
 WORKDIR /code
 
@@ -11,7 +11,7 @@ COPY packages/auth packages/auth
 RUN npm --prefix packages/auth run build
 RUN (cd packages/auth && npm prune --production)
 
-FROM node:14-alpine
+FROM node:16-alpine
 
 WORKDIR /code
 
