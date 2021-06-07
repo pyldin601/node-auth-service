@@ -1,8 +1,11 @@
 import { Knex } from './knex'
 import { Config } from './config'
 import Application from 'koa'
+import * as t from 'io-ts'
 import cors from '@koa/cors'
 import Router, { RouterContext } from 'koa-router'
+import { Server } from 'http'
+import { isLeft } from 'fp-ts/Either'
 import { Logger } from './logger'
 import { requestLogger } from './requestLogger'
 import bodyparser from 'koa-bodyparser'
@@ -12,7 +15,36 @@ import { compare, hash } from 'bcryptjs'
 import { generateTokenForUser } from './utils/generateTokenForUser'
 import { IRefreshTokensEntity, IUsersEntity, Table } from './entities'
 import { createAccessToken } from './utils/createAccessToken'
-import { Server } from 'http'
+
+const SignupRequestIO = t.type(
+  {
+    email: t.string,
+    password: t.string,
+  },
+  'SignupRequestIO',
+)
+
+const LoginRequestIO = t.type(
+  {
+    email: t.string,
+    password: t.string,
+  },
+  'LoginRequestIO',
+)
+
+const RefreshTokenRequestIO = t.type(
+  {
+    refresh_token: t.string,
+  },
+  'RefreshTokenRequestIO',
+)
+
+const ReleaseTokenRequestIO = t.type(
+  {
+    refresh_token: t.string,
+  },
+  'ReleaseTokenRequestIO',
+)
 
 export class HttpServer {
   readonly app: Application
@@ -89,7 +121,14 @@ export class HttpServer {
   }
 
   private signup = async (ctx: RouterContext): Promise<void> => {
-    const { email, password } = ctx.request.body
+    const request = SignupRequestIO.decode(ctx.request.body)
+
+    if (isLeft(request)) {
+      ctx.status = 400
+      return
+    }
+
+    const { email, password } = request.right
 
     if (!email || !password) {
       ctx.throw(400)
@@ -125,7 +164,14 @@ export class HttpServer {
   }
 
   private login = async (ctx: RouterContext): Promise<void> => {
-    const { email, password } = ctx.request.body
+    const request = LoginRequestIO.decode(ctx.request.body)
+
+    if (isLeft(request)) {
+      ctx.status = 400
+      return
+    }
+
+    const { email, password } = request.right
 
     if (!email || !password) {
       ctx.throw(400)
@@ -166,7 +212,14 @@ export class HttpServer {
   }
 
   private refreshToken = async (ctx: RouterContext): Promise<void> => {
-    const { refresh_token: oldRefreshToken } = ctx.request.body
+    const request = RefreshTokenRequestIO.decode(ctx.request.body)
+
+    if (isLeft(request)) {
+      ctx.status = 400
+      return
+    }
+
+    const { refresh_token: oldRefreshToken } = request.right
 
     if (!oldRefreshToken) {
       ctx.throw(400)
@@ -206,7 +259,14 @@ export class HttpServer {
   }
 
   private releaseToken = async (ctx: RouterContext): Promise<void> => {
-    const { refresh_token } = ctx.request.body
+    const request = ReleaseTokenRequestIO.decode(ctx.request.body)
+
+    if (isLeft(request)) {
+      ctx.status = 400
+      return
+    }
+
+    const { refresh_token } = request.right
 
     if (!refresh_token) {
       ctx.throw(400)
