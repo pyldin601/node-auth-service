@@ -37,7 +37,7 @@ jobs:
           event-type: build-image
           client-payload: |
             {
-              "image_name": "pldin601/node-auth-service-db-migration",
+              "image_name": "pldin601/node-auth-db-migration",
               "dockerfile": "migration.dockerfile",
               "context": "."
             }
