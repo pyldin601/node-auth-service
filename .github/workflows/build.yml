@@ -1,0 +1,60 @@
+name: build an image
+
+on:
+  repository_dispatch:
+    types:
+      - build-image
+
+jobs:
+  get_build:
+    name: get current build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Setup Variables
+        id: vars
+        run: |
+          echo "::set-output name=date::$(date +'%y.%m')"
+          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+    outputs:
+      build_id: ${{ steps.vars.outputs.date }}.${{ github.run_id }}-${{ steps.vars.outputs.sha_short }}
+
+  main:
+    needs: [get_build]
+    name: build ${{ github.event.client_payload.image_name }}:${{ needs.get_build.outputs.build_id }}
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: ${{ github.event.client_payload.image_name }}
+      DOCKERFILE: ${{ github.event.client_payload.dockerfile }}
+      CONTEXT: ${{ github.event.client_payload.context }}
+      BUILD_ID: ${{ needs.get_build.outputs.build_id }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@master
+      - name: login
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: setup
+        uses: docker/setup-buildx-action@v1
+        id: builder
+      - name: build
+        uses: docker/build-push-action@v2
+        with:
+          builder: ${{ steps.builder.outputs.name }}
+          file: ${{ env.DOCKERFILE }}
+          context: ${{ env.CONTEXT }}
+          push: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:${{ env.BUILD_ID }}
+            ${{ env.IMAGE_NAME }}:latest
+      - name: comment
+        uses: peter-evans/commit-comment@v1
+        with:
+          body: |
+            Image has been built:
+
+                ${{ env.IMAGE_NAME }}:${{ env.BUILD_ID }}
+                ${{ env.IMAGE_NAME }}:latest

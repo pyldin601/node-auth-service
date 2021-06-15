@@ -1,0 +1,43 @@
+name: trigger build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  main:
+    name: main
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@master
+      - name: use node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: npm test
+      - name: trigger build (server)
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          event-type: build-image
+          client-payload: |
+            {
+              "image_name": "pldin601/node-auth-service",
+              "dockerfile": "Dockerfile",
+              "context": "."
+            }
+      - name: trigger build (db migration)
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          event-type: build-image
+          client-payload: |
+            {
+              "image_name": "pldin601/node-auth-service-db-migration",
+              "dockerfile": "migration.dockerfile",
+              "context": "."
+            }
