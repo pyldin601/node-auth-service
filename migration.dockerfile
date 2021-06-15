@@ -4,11 +4,11 @@ WORKDIR /code
 
 ENV NODE_ENV=production
 
-COPY packages/auth/package.json packages/auth/
-COPY packages/auth/package-lock.json packages/auth/
-RUN npm --prefix packages/auth ci
+COPY package.json ./
+COPY package-lock.json ./
+RUN npm ci
 
-COPY packages/auth/knexfile.js packages/auth/
-COPY packages/auth/migrations packages/auth/migrations
+COPY knexfile.js ./
+COPY migrations ./migrations
 
-CMD npm --prefix packages/auth run migrate
+CMD npm run migrate
